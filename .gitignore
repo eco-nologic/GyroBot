@@ -1,0 +1,23 @@
+# PlatformIO local directories
+.pio/
+.pioenvs/
+.piolibdeps/
+
+# VS Code directories
+.vscode/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Compiled binaries
+*.bin
+*.elf
+*.hex
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Build summaries and local logs
+*.log
