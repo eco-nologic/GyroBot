@@ -228,12 +228,14 @@ main {
 
 /* Motor Status */
 .motor-status {
+.sensor-status {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: 20px;
 }
 
 .motor-info {
+.sensor-info {
     background: #f9f9f9;
     padding: 15px;
     border-radius: 5px;

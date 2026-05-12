@@ -14,6 +14,9 @@ let robotState = {
     rightSpeed: 0,
     leftEncoder: 0,
     rightEncoder: 0,
+    accel: { x: 0, y: 0, z: 0 },
+    gyro: { x: 0, y: 0, z: 0 },
+    mag: { x: 0, y: 0, z: 0 },
     battery: 0,
     moving: false,
     waypointIndex: 0
@@ -79,6 +82,9 @@ function updateTelemetry(data) {
     robotState.rightSpeed = data.rightSpeed || 0;
     robotState.leftEncoder = data.leftEncoder || 0;
     robotState.rightEncoder = data.rightEncoder || 0;
+    robotState.accel = { x: data.ax || 0, y: data.ay || 0, z: data.az || 0 };
+    robotState.gyro = { x: data.gx || 0, y: data.gy || 0, z: data.gz || 0 };
+    robotState.mag = { x: data.mx || 0, y: data.my || 0, z: data.mz || 0 };
     robotState.battery = data.battery || 0;
     robotState.moving = data.moving || false;
     robotState.waypointIndex = data.waypointIndex || 0;
@@ -99,6 +105,19 @@ function updateDisplay() {
     // Update encoder steps
     document.getElementById('leftEncoder').textContent = robotState.leftEncoder;
     document.getElementById('rightEncoder').textContent = robotState.rightEncoder;
+
+    // Update IMU Sensors
+    document.getElementById('accelX').textContent = robotState.accel.x.toFixed(2);
+    document.getElementById('accelY').textContent = robotState.accel.y.toFixed(2);
+    document.getElementById('accelZ').textContent = robotState.accel.z.toFixed(2);
+    
+    document.getElementById('gyroX').textContent = robotState.gyro.x.toFixed(2);
+    document.getElementById('gyroY').textContent = robotState.gyro.y.toFixed(2);
+    document.getElementById('gyroZ').textContent = robotState.gyro.z.toFixed(2);
+    
+    document.getElementById('magX').textContent = robotState.mag.x.toFixed(2);
+    document.getElementById('magY').textContent = robotState.mag.y.toFixed(2);
+    document.getElementById('magZ').textContent = robotState.mag.z.toFixed(2);
 
     // Update battery
     document.getElementById('batteryStatus').textContent = robotState.battery.toFixed(1) + 'V';

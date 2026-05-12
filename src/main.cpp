@@ -105,6 +105,16 @@ void taskTelemetry(void* param) {
         telem.rightWheelSpeed = wheelSpeeds.rightMmS;
         telem.leftWheelSteps = driveTrain.getLeftEncoderCount();
         telem.rightWheelSteps = driveTrain.getRightEncoderCount();
+        ImuData raw = nav.getRawData();
+        telem.accelX = raw.accelX;
+        telem.accelY = raw.accelY;
+        telem.accelZ = raw.accelZ;
+        telem.gyroX = raw.gyroX;
+        telem.gyroY = raw.gyroY;
+        telem.gyroZ = raw.gyroZ;
+        telem.magX = raw.magX;
+        telem.magY = raw.magY;
+        telem.magZ = raw.magZ;
         telem.batteryVoltage = battery.getVoltage();
         telem.isMoving = motionCtrl.isMoving();
         telem.waypointIndex = motionCtrl.getCurrentWaypoint();

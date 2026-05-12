@@ -46,13 +46,19 @@ void Navigation::update() {
     float dt = (now - lastUpdate) / 1000.0f;
     lastUpdate = now;
 
-    // Read sensor data (simulated)
-    rawData.gyroX = 0.0f;
-    rawData.gyroY = 0.0f;
-    rawData.gyroZ = 0.0f;
-    rawData.accelX = 0.0f;
-    rawData.accelY = 0.0f;
-    rawData.accelZ = 9.81f;
+    // Provide simulated data jitter for BOTH modes for testing
+    // This allows you to verify the dashboard UI is updating live
+    rawData.gyroX = (random(-10, 10) / 100.0f);
+    rawData.gyroY = (random(-10, 10) / 100.0f);
+    rawData.gyroZ = (random(-10, 10) / 100.0f);
+
+    rawData.accelX = (random(-20, 20) / 100.0f);
+    rawData.accelY = (random(-20, 20) / 100.0f);
+    rawData.accelZ = 9.81f + (random(-10, 10) / 100.0f);
+
+    rawData.magX = 25.0f + (random(-50, 50) / 10.0f);
+    rawData.magY = -18.0f + (random(-50, 50) / 10.0f);
+    rawData.magZ = 42.0f + (random(-50, 50) / 10.0f);
 
     // Update Mahony filter
     updateMahonyFilter(dt);

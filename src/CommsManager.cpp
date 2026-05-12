@@ -198,6 +198,15 @@ void CommsManager::sendTelemetry(const TelemetryPacket& packet) {
     doc["rightSpeed"] = packet.rightWheelSpeed;
     doc["leftEncoder"] = packet.leftWheelSteps;
     doc["rightEncoder"] = packet.rightWheelSteps;
+    doc["ax"] = packet.accelX;
+    doc["ay"] = packet.accelY;
+    doc["az"] = packet.accelZ;
+    doc["gx"] = packet.gyroX;
+    doc["gy"] = packet.gyroY;
+    doc["gz"] = packet.gyroZ;
+    doc["mx"] = packet.magX;
+    doc["my"] = packet.magY;
+    doc["mz"] = packet.magZ;
     doc["battery"] = packet.batteryVoltage;
     doc["moving"] = packet.isMoving;
     doc["waypointIndex"] = packet.waypointIndex;

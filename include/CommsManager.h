@@ -21,6 +21,15 @@ struct TelemetryPacket {
     float rightWheelSpeed;
     long leftWheelSteps;
     long rightWheelSteps;
+    float accelX;
+    float accelY;
+    float accelZ;
+    float gyroX;
+    float gyroY;
+    float gyroZ;
+    float magX;
+    float magY;
+    float magZ;
     float batteryVoltage;
     bool isMoving;
     int waypointIndex;
