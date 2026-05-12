@@ -103,6 +103,8 @@ void taskTelemetry(void* param) {
         telem.ghostHeading = ghostPose.theta;
         telem.leftWheelSpeed = wheelSpeeds.leftMmS;
         telem.rightWheelSpeed = wheelSpeeds.rightMmS;
+        telem.leftWheelSteps = driveTrain.getLeftEncoderCount();
+        telem.rightWheelSteps = driveTrain.getRightEncoderCount();
         telem.batteryVoltage = battery.getVoltage();
         telem.isMoving = motionCtrl.isMoving();
         telem.waypointIndex = motionCtrl.getCurrentWaypoint();

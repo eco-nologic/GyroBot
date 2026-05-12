@@ -118,7 +118,7 @@ void CommsManager::processCommand(const JsonDocument& doc, AsyncWebSocketClient*
         if (motionCtrl) motionCtrl->stop();
     };
 
-    if (strcmp(cmd, "DRIVE") == 0) {
+    if (strcmp(cmd, "MOTION") == 0) {
         stopAuto();
         
         // Support both direct mm/s and normalized 0-1 joystick inputs
@@ -196,6 +196,8 @@ void CommsManager::sendTelemetry(const TelemetryPacket& packet) {
     doc["ghostHeading"] = packet.ghostHeading;
     doc["leftSpeed"] = packet.leftWheelSpeed;
     doc["rightSpeed"] = packet.rightWheelSpeed;
+    doc["leftEncoder"] = packet.leftWheelSteps;
+    doc["rightEncoder"] = packet.rightWheelSteps;
     doc["battery"] = packet.batteryVoltage;
     doc["moving"] = packet.isMoving;
     doc["waypointIndex"] = packet.waypointIndex;

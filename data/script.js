@@ -12,6 +12,8 @@ let robotState = {
     ghostTheta: 0,
     leftSpeed: 0,
     rightSpeed: 0,
+    leftEncoder: 0,
+    rightEncoder: 0,
     battery: 0,
     moving: false,
     waypointIndex: 0
@@ -75,6 +77,8 @@ function updateTelemetry(data) {
     robotState.ghostTheta = data.ghostHeading || 0;
     robotState.leftSpeed = data.leftSpeed || 0;
     robotState.rightSpeed = data.rightSpeed || 0;
+    robotState.leftEncoder = data.leftEncoder || 0;
+    robotState.rightEncoder = data.rightEncoder || 0;
     robotState.battery = data.battery || 0;
     robotState.moving = data.moving || false;
     robotState.waypointIndex = data.waypointIndex || 0;
@@ -91,6 +95,10 @@ function updateDisplay() {
     // Update motor speeds
     document.getElementById('leftSpeed').textContent = robotState.leftSpeed.toFixed(1);
     document.getElementById('rightSpeed').textContent = robotState.rightSpeed.toFixed(1);
+
+    // Update encoder steps
+    document.getElementById('leftEncoder').textContent = robotState.leftEncoder;
+    document.getElementById('rightEncoder').textContent = robotState.rightEncoder;
 
     // Update battery
     document.getElementById('batteryStatus').textContent = robotState.battery.toFixed(1) + 'V';
@@ -177,20 +185,37 @@ document.getElementById('btnStop').addEventListener('click', () => {
     addLog('STOP command sent');
 });
 
-document.getElementById('btnForward').addEventListener('click', () => {
-    sendCommand({ cmd: 'FORWARD', speed: 100 });
-    addLog('Moving forward');
-});
+const addHoldToMove = (id, command, logMsg) => {
+    const btn = document.getElementById(id);
+    const stop = () => {
+        sendCommand({ cmd: 'STOP' });
+        addLog('Movement stopped');
+    };
 
-document.getElementById('btnTurnLeft').addEventListener('click', () => {
-    sendCommand({ cmd: 'TURN_LEFT', speed: 50 });
-    addLog('Turning left');
-});
+    // Mouse Events
+    btn.addEventListener('mousedown', () => {
+        sendCommand(command);
+        addLog(logMsg);
+    });
+    btn.addEventListener('mouseup', stop);
+    btn.addEventListener('mouseleave', stop);
 
-document.getElementById('btnTurnRight').addEventListener('click', () => {
-    sendCommand({ cmd: 'TURN_RIGHT', speed: 50 });
-    addLog('Turning right');
-});
+    // Touch Events (for mobile)
+    btn.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        sendCommand(command);
+        addLog(logMsg);
+    });
+    btn.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        stop();
+    });
+};
+
+addHoldToMove('btnForward', { cmd: 'FORWARD', speed: 100 }, 'Moving forward');
+addHoldToMove('btnBackward', { cmd: 'BACKWARD', speed: 100 }, 'Moving backward');
+addHoldToMove('btnTurnLeft', { cmd: 'TURN_LEFT', speed: 50 }, 'Turning left');
+addHoldToMove('btnTurnRight', { cmd: 'TURN_RIGHT', speed: 50 }, 'Turning right');
 
 document.getElementById('btnCircle').addEventListener('click', () => {
     sendCommand({ cmd: 'DRAW_CIRCLE', centerX: 500, centerY: 500, radius: 200 });
@@ -222,6 +247,8 @@ document.getElementById('btnDrawText').addEventListener('click', () => {
 const joystick = document.getElementById('joystick');
 const joystickHandle = document.getElementById('joystickHandle');
 let isJoystickActive = false;
+let lastLinear = 0;
+let lastAngular = 0;
 
 joystick.addEventListener('mousedown', () => {
     isJoystickActive = true;
@@ -232,6 +259,8 @@ document.addEventListener('mouseup', () => {
     joystickHandle.style.left = '50%';
     joystickHandle.style.top = '50%';
     sendCommand({ cmd: 'STOP' });
+    lastLinear = 0;
+    lastAngular = 0;
 });
 
 document.addEventListener('mousemove', (e) => {
@@ -260,14 +289,18 @@ document.addEventListener('mousemove', (e) => {
     joystickHandle.style.top = handleY + 'px';
 
     // Send motion command
-    const linearVelocity = (dy / maxDistance) * 100;
-    const angularVelocity = (dx / maxDistance) * 2;
+    const linearVelocity = parseFloat(((dy / maxDistance) * 100).toFixed(1));
+    const angularVelocity = parseFloat(((dx / maxDistance) * 2).toFixed(2));
 
-    sendCommand({
-        cmd: 'MOTION',
-        linear: linearVelocity,
-        angular: angularVelocity
-    });
+    if (linearVelocity !== lastLinear || angularVelocity !== lastAngular) {
+        sendCommand({
+            cmd: 'MOTION',
+            linear: linearVelocity,
+            angular: angularVelocity
+        });
+        lastLinear = linearVelocity;
+        lastAngular = angularVelocity;
+    }
 });
 
 // ============================================================================
