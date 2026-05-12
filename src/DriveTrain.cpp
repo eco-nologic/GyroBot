@@ -42,22 +42,32 @@ void DriveTrain::setWheelSpeeds(float leftMmS, float rightMmS) {
     currentWheelSpeeds.leftMmS = leftMmS;
     currentWheelSpeeds.rightMmS = rightMmS;
 
+    int lpwm = speedToPwm(fabs(leftMmS));
+    int rpwm = speedToPwm(fabs(rightMmS));
+
+    if (lpwm > 0 || rpwm > 0) {
+        Serial.printf("[Drive] PWM L:%d, R:%d | Speeds L:%.1f, R:%.1f\n", lpwm, rpwm, leftMmS, rightMmS);
+    }
+
     if (leftMotor) {
         leftMotor->setDirection(leftMmS >= 0);
-        leftMotor->setPwm(speedToPwm(fabs(leftMmS)));
+        leftMotor->setPwm(lpwm);
     }
 
     if (rightMotor) {
         rightMotor->setDirection(rightMmS >= 0);
-        rightMotor->setPwm(speedToPwm(fabs(rightMmS)));
+        rightMotor->setPwm(rpwm);
     }
 }
 
 int DriveTrain::speedToPwm(float speedMmS) {
-    // Convert speed (mm/s) to PWM (0-255)
-    if (speedMmS < 5.0f) return 0;
-    int pwm = (int)((speedMmS / MaxLinearSpeedMmS) * 255.0f);
-    return constrain(pwm, 0, 255);
+    if (speedMmS < 1.0f) return 0;
+    
+    // Map speed range to usable PWM range (151 to 255)
+    // This ensures even slow commanded speeds provide enough torque to move
+    float ratio = speedMmS / MaxLinearSpeedMmS;
+    int pwm = 151 + (int)(ratio * (255 - 151));
+    return constrain(pwm, 151, 255);
 }
 
 void DriveTrain::resetOdometry() {

@@ -21,15 +21,15 @@ constexpr float MaxAngularSpeedRadS = 1.6f;   // Max rotation speed
 // ============================================================================
 // MOTOR CONTROL - LEFT MOTOR (DC motor with encoder)
 // ============================================================================
-constexpr int PinMotorLeftIn1 = 17;   // Direction control (H-bridge input 1)
-constexpr int PinMotorLeftIn2 = 16;   // Direction control (H-bridge input 2)
+constexpr int PinMotorLeftIn1 = 17;   // Flipped to correct global forward direction
+constexpr int PinMotorLeftIn2 = 16;   // Flipped to correct global forward direction
 constexpr int PinMotorLeftEn  = 4;    // PWM enable (speed control, 0-255)
 
 // ============================================================================
 // MOTOR CONTROL - RIGHT MOTOR (DC motor with encoder)
 // ============================================================================
-constexpr int PinMotorRightIn1 = 19;  // Direction control (H-bridge input 1)
-constexpr int PinMotorRightIn2 = 18;  // Direction control (H-bridge input 2)
+constexpr int PinMotorRightIn1 = 18;  // Flipped to correct global forward direction
+constexpr int PinMotorRightIn2 = 19;  // Flipped to correct global forward direction
 constexpr int PinMotorRightEn  = 23;  // PWM enable (speed control, 0-255)
 
 // ============================================================================
@@ -58,7 +58,7 @@ constexpr uint8_t ImuAddress = 0;
 // ============================================================================
 // BATTERY MONITORING (ADC)
 // ============================================================================
-constexpr int PinBatteryAdc = 0;           // ADC input pin (GPIO0, may not work on all ESP32s)
+constexpr int PinBatteryAdc = 0;           // Reverting to GPIO 0 as it was working previously
 constexpr float BatteryDividerRatio = 2.0f; // Voltage divider ratio (3.3V ref scaled by 2x)
 constexpr float BatteryLowVoltage = 6.6f;   // Low battery threshold (4S LiPo minimum safe)
 

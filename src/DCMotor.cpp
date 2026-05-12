@@ -50,6 +50,10 @@ void DCMotor::setPwm(int pwm) {
     pwm = constrain(pwm, 0, 255);
     if (pwm > 0 && pwm < 151) pwm = 151;
 
+    if (pwm > 0) {
+        Serial.printf("[Motor] PWM output: %d on Pin %d\n", pwm, enablePin);
+    }
+
     analogWrite(enablePin, pwm);
 }
 

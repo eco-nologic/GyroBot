@@ -195,7 +195,7 @@ void setup() {
     Serial.println("[Boot] ✅ BatteryMonitor initialized");
 
     // Initialize communications
-    if (!comms.begin()) {
+    if (!comms.begin(&driveTrain, &motionCtrl, &poseEstimator, &pathPlanner)) {
         Serial.println("[WARN] CommsManager initialization failed");
     } else {
         Serial.println("[Boot] ✅ CommsManager (WiFi/WebSocket) initialized");

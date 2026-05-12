@@ -12,8 +12,10 @@ void MotionController::begin() {
 }
 
 void MotionController::update() {
-    if (!_isMoving || !waypoints || waypointCount == 0) {
-        driveTrain->stop();
+    if (!_isMoving) return;
+
+    if (!waypoints || waypointCount == 0) {
+        stop();
         return;
     }
 

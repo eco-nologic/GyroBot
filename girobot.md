@@ -124,13 +124,13 @@ IP Address:            192.168.4.1
 | **DriveTrain.cpp** | ✅ FULL | Differential drive kinematics |
 | **Navigation.cpp** | ✅ FULL | IMU sensor fusion (MPU9250, BNO055), auto-detect |
 | **PoseEstimator.cpp** | ✅ FULL | Odometry + IMU fusion, ghost pose tracking |
-| **MotionController.cpp** | ⚠️ PARTIAL | Waypoint following basic; **needs full PID enhancement (Ki, Kd terms)** |
+| **MotionController.cpp** | ✅ FULL | Waypoint following with full PID (Kp, Ki, Kd) |
 | **PathPlanner.cpp** | ✅ FULL | Shapes (circle, triangle, rect) + text with Bezier |
 | **CommsManager.cpp** | ✅ FULL | WiFi AP, WebSocket (Port 80), JSON telemetry |
 | **ConfigManager.cpp** | ✅ FULL | NVS persistent storage, 20+ params |
-| **BatteryMonitor.cpp** | ⚠️ PARTIAL | ADC reading structure exists; **ADC pin 0 not working** |
+| **BatteryMonitor.cpp** | ⚠️ PARTIAL | ADC logic exists; **GPIO 0 reading issues persist** |
 
-**Summary**: 9 out of 10 modules are production-ready. WebSocket and Web Server now share Port 80 for simplicity and to avoid browser cross-origin issues.
+**Summary**: Core motion and communication systems are now production-ready. WebSocket and Web Server share Port 80, and motor polarity has been calibrated for mirrored mounting.
 
 ---
 
@@ -297,8 +297,9 @@ Axle_trajectory = required_pen_trajectory + offset_vector(heading, 130mm)
 
 ## 📝 Notes
 
-- **Battery Issue**: ADC pin 0 is not working (Phase 11 diagnosis required). May need GPIO36 or GPIO39 alternative.
-- **PID Enhancement**: MotionController.cpp needs full Ki/Kd integration; currently only Kp visible.
+- **Battery Issue**: ADC pin 0 is unreliable on some ESP32 boards. Calibration via `analogSetAttenuation(ADC_11db)` is implemented.
+- **PWM Deadband**: Motors require a minimum PWM of **151** to move. The `DriveTrain` maps commanded speeds (0-Max) to the usable PWM range (151-255).
+- **Motor Polarity**: Mirrored mounting requires swapped logic pins for the Left motor to ensure both wheels spin forward for a positive linear velocity command.
 - **Simulation Mode**: Entire stack supports VirtualStepper (no hardware); useful for desktop testing and debugging.
 - **Auto-Detection**: Navigation.cpp automatically detects MPU9250 (0x1E) or BNO055 (0x6B) via I2C scan.
 

@@ -5,6 +5,10 @@
 #include "Config.h"
 #include <ESPAsyncWebServer.h>
 #include <ArduinoJson.h>
+#include "DriveTrain.h"
+#include "MotionController.h"
+#include "PoseEstimator.h"
+#include "PathPlanner.h"
 
 struct TelemetryPacket {
     float robotX;
@@ -27,10 +31,15 @@ private:
     AsyncWebServer* server;
     AsyncWebSocket* ws;
     unsigned long lastTelemetryTime = 0;
+    
+    DriveTrain* driveTrain = nullptr;
+    MotionController* motionCtrl = nullptr;
+    PoseEstimator* poseEstimator = nullptr;
+    PathPlanner* pathPlanner = nullptr;
 
     // WebSocket event handler
-    static void handleWebSocketEvent(AsyncWebSocket* server, AsyncWebSocketClient* client,
-                                      AwsEventType type, void* arg, uint8_t* data, size_t len);
+    void handleWebSocketEvent(AsyncWebSocket* server, AsyncWebSocketClient* client,
+                               AwsEventType type, void* arg, uint8_t* data, size_t len);
 
     // Parse incoming command JSON
     void processCommand(const JsonDocument& cmd, AsyncWebSocketClient* client);
@@ -39,7 +48,7 @@ public:
     CommsManager();
     ~CommsManager() = default;
 
-    bool begin();
+    bool begin(DriveTrain* dt, MotionController* mc, PoseEstimator* pe, PathPlanner* pp);
     void update();
 
     // Send telemetry to all connected clients

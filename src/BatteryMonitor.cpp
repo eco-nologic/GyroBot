@@ -4,9 +4,8 @@
 BatteryMonitor::BatteryMonitor() : lastVoltage(0), isLow(false), lastReadTime(0) {}
 
 void BatteryMonitor::begin() {
-    if (PinBatteryAdc > 0) {
-        analogSetAttenuation(ADC_0db);
-    }
+    // Using 11db attenuation allows reading up to ~3.3V on the pin
+    analogSetAttenuation(ADC_11db);
     update();
 }
 

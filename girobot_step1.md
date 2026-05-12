@@ -489,17 +489,22 @@ void testMotorSynchronization() {
 - [ ] Check motor driver VCC/GND connections
 
 ### Motor Moves Backward Instead of Forward
-**Cause**: IN1/IN2 pins reversed
+**Cause**: Global polarity inverted.
 
-**Fix**: In Config.h, swap:
+**Fix**: In `Config.h`, swap `In1` and `In2` for **both** motors.
+
+### Wheels Spin in Opposite Directions (Robot Turns in Place)
+**Cause**: Mirrored motor mounting. Since motors face opposite directions, "forward" for one is "backward" for the other.
+
+**Fix**: In `Config.h`, swap `In1` and `In2` for the **Left Motor** only.
+
+### Wheels Don't Spin at Low Command Speeds
+**Cause**: Mechanical deadband. Motors cannot overcome friction at low PWM.
+
+**Fix**: Verify `DriveTrain::speedToPwm` is mapping speed to the **151-255** range.
 ```cpp
-// Before:
-constexpr int PinMotorLeftIn1 = 17;
-constexpr int PinMotorLeftIn2 = 16;
-
-// After:
-constexpr int PinMotorLeftIn1 = 16;
-constexpr int PinMotorLeftIn2 = 17;
+// DriveTrain.cpp: Map speed ratio to usable PWM
+int pwm = 151 + (int)(ratio * (255 - 151));
 ```
 
 Then rebuild and upload.
