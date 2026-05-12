@@ -212,6 +212,7 @@ void CommsManager::sendTelemetry(const TelemetryPacket& packet) {
     doc["waypointIndex"] = packet.waypointIndex;
     doc["targetX"] = packet.targetX;
     doc["targetY"] = packet.targetY;
+    doc["bearing"] = packet.bearingToTarget;
 
     String json;
     serializeJson(doc, json);

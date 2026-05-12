@@ -19,7 +19,10 @@ let robotState = {
     mag: { x: 0, y: 0, z: 0 },
     battery: 0,
     moving: false,
-    waypointIndex: 0
+    waypointIndex: 0,
+    targetX: 0,
+    targetY: 0,
+    bearingToTarget: 0
 };
 
 const canvas = document.getElementById('robotCanvas');
@@ -87,7 +90,10 @@ function updateTelemetry(data) {
     robotState.mag = { x: data.mx || 0, y: data.my || 0, z: data.mz || 0 };
     robotState.battery = data.battery || 0;
     robotState.moving = data.moving || false;
-    robotState.waypointIndex = data.waypointIndex || 0;
+    robotState.waypointIndex = data.waypointIndex || 0; // Current waypoint index
+    robotState.targetX = data.targetX || 0; // Target waypoint X
+    robotState.targetY = data.targetY || 0; // Target waypoint Y
+    robotState.bearingToTarget = data.bearing || 0; // Bearing to target
 
     updateDisplay();
 }
@@ -97,6 +103,8 @@ function updateDisplay() {
     document.getElementById('posX').textContent = robotState.x.toFixed(1);
     document.getElementById('posY').textContent = robotState.y.toFixed(1);
     document.getElementById('posTheta').textContent = robotState.theta.toFixed(2);
+    document.getElementById('compassHeading').textContent = (robotState.theta * 180 / Math.PI).toFixed(1);
+    document.getElementById('bearingToTarget').textContent = (robotState.bearingToTarget * 180 / Math.PI).toFixed(1);
 
     // Update motor speeds
     document.getElementById('leftSpeed').textContent = robotState.leftSpeed.toFixed(1);

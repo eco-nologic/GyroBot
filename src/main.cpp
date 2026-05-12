@@ -118,8 +118,17 @@ void taskTelemetry(void* param) {
         telem.batteryVoltage = battery.getVoltage();
         telem.isMoving = motionCtrl.isMoving();
         telem.waypointIndex = motionCtrl.getCurrentWaypoint();
-        telem.targetX = 0; // TODO: get from motion controller
-        telem.targetY = 0; // TODO: get from motion controller
+        
+        Waypoint currentTarget = motionCtrl.getCurrentTargetWaypoint();
+        telem.targetX = currentTarget.x;
+        telem.targetY = currentTarget.y;
+
+        // Calculate bearing to target
+        if (telem.isMoving && currentTarget.tolerance > 0) { // Only calculate if there's an active target
+            telem.bearingToTarget = atan2(currentTarget.y - robotPose.y, currentTarget.x - robotPose.x);
+        } else {
+            telem.bearingToTarget = robotPose.theta; // Default to robot's heading if no target
+        }
 
         // Send telemetry
         comms.sendTelemetry(telem);

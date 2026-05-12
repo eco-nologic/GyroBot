@@ -35,6 +35,7 @@ struct TelemetryPacket {
     int waypointIndex;
     float targetX;
     float targetY;
+    float bearingToTarget; // Bearing from robot to current target waypoint (radians)
 };
 
 class CommsManager {

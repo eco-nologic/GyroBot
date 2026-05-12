@@ -59,6 +59,13 @@ public:
     bool isMoving() const { return _isMoving; }
     int getCurrentWaypoint() const { return currentWaypointIndex; }
     int getTotalWaypoints() const { return waypointCount; }
+    Waypoint getCurrentTargetWaypoint() const {
+        if (_isMoving && waypoints && currentWaypointIndex < waypointCount) {
+            return waypoints[currentWaypointIndex];
+        }
+        // Return a default/invalid waypoint if not moving or no target
+        return {0.0f, 0.0f, 0.0f}; 
+    }
 
     // Stop and reset
     void reset();
