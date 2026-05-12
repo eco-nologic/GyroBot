@@ -140,13 +140,13 @@ void CommsManager::processCommand(const JsonDocument& doc, AsyncWebSocketClient*
         stopAuto();
         if (driveTrain) driveTrain->setMotion(-MaxLinearSpeedMmS, 0);
     }
-    else if (strcmp(cmd, "LEFT") == 0) {
+    else if (strcmp(cmd, "TURN_LEFT") == 0) {
         stopAuto();
-        if (driveTrain) driveTrain->setMotion(0, MaxAngularSpeedRadS);
+        if (driveTrain) driveTrain->setMotion(0, MaxAngularSpeedRadS); // Full power turn
     }
-    else if (strcmp(cmd, "RIGHT") == 0) {
+    else if (strcmp(cmd, "TURN_RIGHT") == 0) {
         stopAuto();
-        if (driveTrain) driveTrain->setMotion(0, -MaxAngularSpeedRadS);
+        if (driveTrain) driveTrain->setMotion(0, -MaxAngularSpeedRadS); // Full power turn
     }
     else if (strcmp(cmd, "STOP") == 0) {
         if (motionCtrl) motionCtrl->stop();

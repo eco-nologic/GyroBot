@@ -13,10 +13,15 @@ void DriveTrain::begin() {
 }
 
 void DriveTrain::setMotion(float linearMmS, float angularRadS) {
-    currentCommand.linearVelocityMmS = constrain(linearMmS, -MaxLinearSpeedMmS, MaxLinearSpeedMmS);
-    currentCommand.angularVelocityRadS = constrain(angularRadS, -MaxAngularSpeedRadS, MaxAngularSpeedRadS);
+    // Store commands locally first to ensure atomic calculation
+    float targetLinear = constrain(linearMmS, -MaxLinearSpeedMmS, MaxLinearSpeedMmS);
+    float targetAngular = constrain(angularRadS, -MaxAngularSpeedRadS, MaxAngularSpeedRadS);
+
+    currentCommand = {targetLinear, targetAngular};
 
     WheelSpeeds speeds = calculateWheelSpeeds(currentCommand);
+    Serial.printf("[Drive] Command: Linear=%.1f mm/s, Angular=%.2f rad/s | Calculated Speeds: Left=%.1f mm/s, Right=%.1f mm/s\n",
+                  targetLinear, targetAngular, speeds.leftMmS, speeds.rightMmS);
     setWheelSpeeds(speeds.leftMmS, speeds.rightMmS);
 }
 
@@ -44,6 +49,11 @@ void DriveTrain::setWheelSpeeds(float leftMmS, float rightMmS) {
 
     int lpwm = speedToPwm(fabs(leftMmS));
     int rpwm = speedToPwm(fabs(rightMmS));
+
+    // Safety: If rotation is requested but PWM ends up too low, 
+    // we ensure we hit the minimum threshold if there's any significant speed requested.
+    if (fabs(leftMmS) > 0.5f && lpwm == 0) lpwm = 151;
+    if (fabs(rightMmS) > 0.5f && rpwm == 0) rpwm = 151;
 
     if (lpwm > 0 || rpwm > 0) {
         Serial.printf("[Drive] PWM L:%d, R:%d | Speeds L:%.1f, R:%.1f\n", lpwm, rpwm, leftMmS, rightMmS);
